@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+// import { Progress } from "@/components/ui/progress";
 import BudgetForm from "@/components/BudgetForm";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -82,10 +82,10 @@ const BudgetPage = () => {
                     </span>
                   </div>
                   <div className="space-y-2">
-                    <Progress
+                    {/* <Progress
                       value={percentage}
                       className={percentage > 100 ? "bg-red-200" : ""}
-                    />
+                    /> */}
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>{percentage.toFixed(1)}% spent</span>
                       <span>
