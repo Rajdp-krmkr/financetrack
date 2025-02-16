@@ -9,8 +9,6 @@ import {
   BarChart3,
   Wallet,
 } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -20,6 +18,9 @@ import {
 } from "@/components/ui/card";
 
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -101,7 +102,33 @@ export default function Home() {
     <div className="min-h-[calc(100vh-4rem)] flex flex-col">
       <section className="flex-1 py-12 md:py-24 lg:py-12 bg-gradient-to-b from-background to-muted">
         {!isNameSet ? (
-          <></>
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-500">
+                  Take Control of Your Finances
+                </h1>
+                <p className="max-w-[600px] text-zinc-500 md:text-xl dark:text-zinc-400 mx-auto">
+                  FinanceTrack helps you manage your money smarter with powerful
+                  budgeting tools and insightful analytics.
+                </p>
+              </div>
+              <div className="w-full max-w-sm space-y-4">
+                <form onSubmit={handleNameSubmit} className="space-y-4">
+                  <Input
+                    placeholder="Enter your name to get started"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="text-center"
+                  />
+                  <Button type="submit" className="w-full" size="lg">
+                    Start Your Financial Journey
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </form>
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-12">
