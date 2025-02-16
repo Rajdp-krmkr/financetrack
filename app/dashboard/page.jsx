@@ -9,6 +9,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import TransactionList from "@/components/TransactionList";
+import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function DashboardPage() {
   const transactions = getTransactions();
@@ -16,7 +18,21 @@ export default function DashboardPage() {
 
   const totalExpenses = transactions.reduce((sum, t) => sum + t.amount, 0);
   const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
-  const overBudgetCategories = budgets.filter((b) => b.actualSpent > b.limit);
+  const [overBudgetCategories, setOverBudgetCategories] = useState(
+    budgets.filter((b) => b.actualSpent > b.limit)
+  );
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (overBudgetCategories.length > 0) {
+      toast({
+        title: "Over Budget Categories",
+        description: `You have ${overBudgetCategories.length} categories over budget.`,
+        status: "error",
+      });
+    }
+  }, [overBudgetCategories]);
 
   return (
     <div className="space-y-6">
