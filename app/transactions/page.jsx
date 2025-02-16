@@ -1,20 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import TransactionForm from "@/components/TransactionForm";
+import TransactionList from "@/components/TransactionList";
 import {
   getTransactions,
   addTransaction,
   deleteTransaction,
   updateTransaction,
 } from "@/lib/data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
-import TransactionForm from "@/components/TransactionForm";
-
-import { Plus } from "lucide-react";
-
-const Page = () => {
+export default function TransactionsPage() {
   const [showForm, setShowForm] = useState(false);
   const [transactions, setTransactions] = useState(getTransactions());
 
@@ -43,6 +42,7 @@ const Page = () => {
           Add Transaction
         </Button>
       </div>
+
       {showForm && (
         <Card>
           <CardHeader>
@@ -56,8 +56,12 @@ const Page = () => {
           </CardContent>
         </Card>
       )}
+
+      <TransactionList
+        transactions={transactions}
+        onDelete={handleDeleteTransaction}
+        onUpdate={handleUpdateTransaction}
+      />
     </div>
   );
-};
-
-export default Page;
+}
