@@ -1,14 +1,16 @@
 "use client";
-import { Button } from "@/components/ui/button";
+
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import BudgetForm from "@/components/BudgetForm";
 import { PlusCircle } from "lucide-react";
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 //data
 import { getBudgets, updateBudget, getCategories } from "@/lib/data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 
-const Page = () => {
+const BudgetPage = () => {
   const [budgets, setBudgets] = useState(getBudgets());
   const [showForm, setShowForm] = useState(false);
   const categories = getCategories();
@@ -30,12 +32,27 @@ const Page = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Budget Management</h1>
-        <Button className="flex items-center">
+        <Button onClick={() => setShowForm(true)} className="flex items-center">
           <PlusCircle className="mr-2 h-4 w-4" />
           Add Budget
         </Button>
       </div>
+
       <div className="grid gap-6">
+        {showForm && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Create New Budget</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <BudgetForm
+                categories={categories}
+                onSubmit={handleUpdateBudget}
+              />
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {budgets.map((budget) => {
             const percentage = (budget.actualSpent / budget.limit) * 100;
@@ -87,4 +104,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default BudgetPage;
