@@ -1,8 +1,9 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Transaction from "@/models/Transaction";
+import Budget from "@/models/Budget";
 import { NextResponse } from "next/server";
 
-// Connect to MongoDB
+// Connect to MongoDB and handle GET and POST requests
 export async function GET() {
   await dbConnect();
   try {
@@ -21,17 +22,23 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    // const body = {
-    //   amount: 123,
-    //   date: "2025-02-17",
-    //   description: "dsd",
-    //   category: "Healthcare",
-    //   paymentMethod: "credit"
-    // };
     console.log("Received Transaction Data:", body); // Log received data
 
+    // Create a new transaction
     const newTransaction = await Transaction.create(body);
     console.log("Stored Transaction Data:", newTransaction); // Log stored data
+
+    // Update the 'actualSpent' value in the budget if the category exists
+    const { category, amount } = body; // Extract category and amount from the body
+    const budget = await Budget.findOne({ category });
+
+    if (budget) {
+      // Update the actualSpent field of the respective category by incrementing it
+      await Budget.updateOne({ category }, { $inc: { actualSpent: amount } });
+      console.log(`Updated budget for category: ${category}`);
+    } else {
+      console.log(`No budget found for category: ${category}`);
+    }
 
     return NextResponse.json(newTransaction, { status: 201 });
   } catch (error) {
