@@ -7,13 +7,10 @@ import BudgetForm from "@/components/BudgetForm";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getCategories } from "@/lib/data";
+import { fetchBudgets } from "@/lib/fetchTransactions";
 
 // Data functions
-const fetchBudgets = async () => {
-  const res = await fetch("/api/budget");
-  if (!res.ok) throw new Error("Failed to fetch budgets");
-  return res.json();
-};
+
 
 const createBudget = async (budgetData) => {
   const res = await fetch("/api/budget", {
