@@ -49,3 +49,94 @@ export async function POST(req) {
     );
   }
 }
+
+// Edit transaction - subtract old amount and add new amount
+export async function PUT(req) {
+  await dbConnect();
+
+  try {
+    const body = await req.json();
+    const { id, category, amount, previousAmount } = body;
+
+    // Find the transaction to update
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return NextResponse.json(
+        { message: "Transaction not found" },
+        { status: 404 }
+      );
+    }
+
+    // Subtract the previous amount from the actualSpent in the Budget
+    const budget = await Budget.findOne({ category });
+    if (budget) {
+      // Update the budget by subtracting the old amount and adding the new amount
+      await Budget.updateOne(
+        { category },
+        {
+          $inc: {
+            actualSpent: amount - previousAmount, // Increment by the difference
+          },
+        }
+      );
+    }
+
+    // Update the transaction data
+    transaction.date = body.date;
+    transaction.description = body.description;
+    transaction.category = body.category;
+    transaction.paymentMethod = body.paymentMethod;
+    transaction.amount = body.amount;
+
+    await transaction.save();
+
+    return NextResponse.json(transaction, { status: 200 });
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    return NextResponse.json(
+      { message: "Error updating transaction", error },
+      { status: 500 }
+    );
+  }
+}
+
+// Delete transaction - subtract amount from the budget's actualSpent
+export async function DELETE(req) {
+  await dbConnect();
+
+  try {
+    const { id, category, amount } = await req.json();
+
+    // Find the transaction to delete
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return NextResponse.json(
+        { message: "Transaction not found" },
+        { status: 404 }
+      );
+    }
+
+    // Remove the transaction
+    await transaction.remove();
+
+    // Update the actualSpent field in the budget by subtracting the transaction amount
+    const budget = await Budget.findOne({ category });
+    if (budget) {
+      await Budget.updateOne(
+        { category },
+        { $inc: { actualSpent: -amount } } // Decrement by the transaction amount
+      );
+    }
+
+    return NextResponse.json(
+      { message: "Transaction deleted" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
+    return NextResponse.json(
+      { message: "Error deleting transaction", error },
+      { status: 500 }
+    );
+  }
+}
