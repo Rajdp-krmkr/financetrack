@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
         >
           <Navbar />
           <main className="container mx-auto px-4 py-8">{children}</main>
-          <Toaster />
+          <Toaster /> 
         </ThemeProvider>
       </body>
     </html>
