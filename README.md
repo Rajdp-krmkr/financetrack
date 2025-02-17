@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🐖 FinanceTrack - Personal Finance Management
 
-## Getting Started
+## 🚀 Overview
 
-First, run the development server:
+FinanceTrack is a powerful personal finance management application that helps users track their income, expenses, and budget effectively. Built with Next.js, MongoDB, and Tailwind CSS, this app provides seamless transaction handling and budgeting to ensure financial stability.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun run dev
+## 🎯 Features
+
+- 📊 **Track Transactions** - Add, edit, and delete transactions with ease.
+- 💰 **Budget Management** - Set budgets for different categories and monitor your spending.
+- 🔍 **Real-Time Data Updates** - Transactions automatically update your budget.
+- 🛠 **Secure and Scalable** - Built with MongoDB and Next.js API routes.
+- 📅 **Sort & Filter Transactions** - View transactions by date, category, and amount.
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Backend**: Next.js API Routes, Node.js, Express.js
+- **Database**: MongoDB (Mongoose ORM)
+- **Authentication**: NextAuth.js (Future implementation)
+
+## 📂 Folder Structure
+
+```
+📂 financetrack
+ ┣ 📂 app
+ ┃ ┣ 📂 api
+ ┃ ┃ ┣ 📂 transactions
+ ┃ ┃ ┃ ┗ 📜 route.js    # API route for transaction handling
+ ┣ 📂 models
+ ┃ ┣ 📜 Transaction.js # Mongoose schema for transactions
+ ┃ ┣ 📜 Budget.js      # Mongoose schema for budget
+ ┣ 📂 lib
+ ┃ ┣ 📜 dbConnect.js   # MongoDB connection utility
+ ┣ 📜 package.json
+ ┣ 📜 README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏗️ Installation & Setup
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 1️⃣ Clone the Repository
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+git clone https://github.com/your-username/financetrack.git
+cd financetrack
+```
 
-## Learn More
+### 2️⃣ Install Dependencies
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install  # or yarn install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3️⃣ Set Up Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Create a `.env.local` file and configure your MongoDB connection string:
 
-## Deploy on Vercel
+```env
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_secret_key
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4️⃣ Run the Development Server
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+npm run dev  # or yarn dev
+```
+
+Then, open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+## 🔧 API Endpoints
+
+### 📌 `GET /api/transactions`
+
+Fetch all transactions sorted by date.
+
+### 📌 `POST /api/transactions`
+
+Create a new transaction and update the budget.
+
+### 📌 `PUT /api/transactions`
+
+Update an existing transaction and adjust the budget accordingly.
+
+### 📌 `DELETE /api/transactions`
+
+Delete a transaction and subtract the amount from the budget.
+
+## 🔥 Contributing
+
+We welcome contributions! Feel free to fork the repository and submit a pull request.
+
+## 🤝 Connect with Us
+
+📧 Email: rajdeepkarmakar2027@gmail.com
+
+🌐 Website: [https://financetrack-six.vercel.app/](https://financetrack-six.vercel.app/)

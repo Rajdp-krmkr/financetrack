@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getTransactions, getBudgets } from "@/lib/data";
 import {
   DollarSign,
   TrendingDown,
@@ -14,9 +13,10 @@ import { useToast } from "@/hooks/use-toast";
 import { fetchBudgets, fetchTransactions } from "@/lib/fetchTransactions";
 
 export default function DashboardPage() {
-  const [transactions, setTransactions] = useState([]);
-  const [budgets, setBudgets] = useState([]);
+  const [transactions, setTransactions] = useState([]); // State to store transaction data
+  const [budgets, setBudgets] = useState([]); // State to store budget data
 
+  // Fetch budgets and transactions when the component mounts
   useEffect(() => {
     fetchBudgets()
       .then((data) => {
@@ -31,20 +31,24 @@ export default function DashboardPage() {
         setTransactions(data);
       })
       .catch((error) => {
-        console.error("Error fetching budgets:", error);
+        console.error("Error fetching transactions:", error);
       });
   }, []);
 
+  // Calculate total expenses from transactions
   const totalExpenses = transactions.reduce((sum, t) => sum + t.amount, 0);
+  // Calculate total budget from all budget categories
   const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
   const [overBudgetCategories, setOverBudgetCategories] = useState([]);
 
+  // Identify categories that exceed their budget limits
   useEffect(() => {
     setOverBudgetCategories(budgets.filter((b) => b.actualSpent > b.limit));
   }, [budgets]);
 
   const { toast } = useToast();
 
+  // Display an alert if any categories are over budget
   useEffect(() => {
     if (overBudgetCategories.length > 0) {
       toast({
@@ -59,7 +63,9 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
 
+      {/* Summary Cards Section */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {/* Total Expenses Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -74,6 +80,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
+        {/* Total Budget Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Budget</CardTitle>
@@ -84,6 +91,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
+        {/* Budget Status Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Budget Status</CardTitle>
@@ -100,6 +108,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
+        {/* Alerts Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Alerts</CardTitle>
@@ -116,6 +125,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Recent Transactions Section */}
       <Card>
         <CardHeader>
           <CardTitle>Recent Transactions</CardTitle>

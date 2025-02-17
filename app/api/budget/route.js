@@ -4,7 +4,7 @@ import Budget from "@/models/Budget"; // Ensure you have a Budget model defined 
 // Fetch all budgets
 export const GET = async () => {
   try {
-    await dbConnect();
+    await dbConnect(); // Establish database connection
     const budgets = await Budget.find(); // Get all budgets from the DB
     return new Response(JSON.stringify(budgets), { status: 200 });
   } catch (error) {
@@ -17,12 +17,13 @@ export const GET = async () => {
 export const POST = async (req) => {
   const { category, limit, actualSpent, period, notes } = await req.json();
 
+  // Validate required fields
   if (!category || !limit) {
     return new Response("Category and limit are required.", { status: 400 });
   }
 
   try {
-    await dbConnect();
+    await dbConnect(); // Ensure database is connected
 
     // Use findOneAndUpdate with upsert option to update or create the document
     const updatedBudget = await Budget.findOneAndUpdate(
@@ -48,15 +49,16 @@ export const POST = async (req) => {
   }
 };
 
+// Update an existing budget
 export const PUT = async (req) => {
-  console.log(req.body);
-  await dbConnect();
+  console.log(req.body); // Log the request body for debugging
+  await dbConnect(); // Establish database connection
 
   try {
-    const body = await req.json();
-
+    const body = await req.json(); // Parse JSON from request
     const { category, period, limit } = body;
 
+    // Validate required fields
     if (!category || !period || !limit) {
       return new Response(
         { message: "Category, limit and period are required." },
@@ -64,12 +66,13 @@ export const PUT = async (req) => {
       );
     }
 
+    // Update budget with matching category
     const updatedBudget = await Budget.findOneAndUpdate(
       { category },
       { period, limit }
     );
-    // await Budget.findOneAndUpdate;
-    console.log(updatedBudget);
+    console.log(updatedBudget); // Log the updated budget
+
     return new Response(
       { message: "Budget updated successfully" },
       { status: 200 }
@@ -80,17 +83,16 @@ export const PUT = async (req) => {
   }
 };
 
+// Delete a budget
 export const DELETE = async (req) => {
-  console.log(req.body);
-  await dbConnect();
+  console.log(req.body); // Log the request body for debugging
+  await dbConnect(); // Establish database connection
 
   try {
-    const body = await req.json();
-    // console.log(body);
-
+    const body = await req.json(); // Parse JSON from request
     const { category, limit } = body;
-    // console.log("category, limit: ", category, limit);
 
+    // Validate required fields
     if (!category || !limit) {
       return new Response(
         { message: "Category and limit are required." },
@@ -98,9 +100,11 @@ export const DELETE = async (req) => {
       );
     }
 
+    // Find the budget entry to delete
     const deletedBudget = await Budget.findOne({ category });
-    await Budget.deleteOne();
-    console.log(deletedBudget);
+    await Budget.deleteOne({ category }); // Delete the budget entry
+    console.log(deletedBudget); // Log the deleted budget
+
     return new Response(
       { message: "Budget deleted successfully" },
       { status: 200 }

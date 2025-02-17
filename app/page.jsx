@@ -18,16 +18,19 @@ import {
 } from "@/components/ui/card";
 
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function Home() {
+  // State to store user's name input
   const [name, setName] = useState("");
+  // State to track if the name is set
   const [isNameSet, setIsNameSet] = useState(false);
+  // State to track if the page is still loading
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Retrieve stored name from local storage if available
     const storedName = localStorage.getItem("userName");
     if (storedName) {
       setName(storedName);
@@ -36,6 +39,7 @@ export default function Home() {
     setIsLoading(false);
   }, []);
 
+  // Handle name submission and store it in local storage
   const handleNameSubmit = (e) => {
     e.preventDefault();
     if (name.trim()) {
@@ -44,6 +48,7 @@ export default function Home() {
     }
   };
 
+  // Feature list with icons and descriptions
   const features = [
     {
       icon: Wallet,
@@ -71,6 +76,7 @@ export default function Home() {
     },
   ];
 
+  // Quick start guide steps
   const quickStartSteps = [
     {
       number: "01",
@@ -89,11 +95,12 @@ export default function Home() {
     },
   ];
 
+  // Show loading state while checking local storage
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[80vh] text-4xl">
-        <PiggyBank className="h-10 w-10  text-primary mx-5" />
-        <span className=" font-bold">FinanceTrack</span>
+        <PiggyBank className="h-10 w-10 text-primary mx-5" />
+        <span className="font-bold">FinanceTrack</span>
       </div>
     );
   }
@@ -102,6 +109,7 @@ export default function Home() {
     <div className="min-h-[calc(100vh-4rem)] flex flex-col">
       <section className="flex-1 py-12 md:py-24 lg:py-12 bg-gradient-to-b from-background to-muted">
         {!isNameSet ? (
+          // If user has not entered their name, show input form
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
@@ -130,6 +138,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
+          // If user has entered their name, show features and quick start guide
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-12">
               <div className="text-center space-y-4">
@@ -141,6 +150,7 @@ export default function Home() {
                 </p>
               </div>
 
+              {/* Feature cards */}
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 w-full">
                 {features.map((feature) => {
                   const Icon = feature.icon;
@@ -168,6 +178,7 @@ export default function Home() {
                 })}
               </div>
 
+              {/* Quick start guide */}
               <div className="w-full">
                 <h2 className="text-2xl font-bold text-center mb-8">
                   Quick Start Guide

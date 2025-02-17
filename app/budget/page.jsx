@@ -10,8 +10,7 @@ import { getCategories } from "@/lib/data";
 import { fetchBudgets } from "@/lib/fetchTransactions";
 import BudgetCard from "@/components/BudgetCard";
 
-// Data functions
-
+// Function to create a new budget
 const createBudget = async (budgetData) => {
   const res = await fetch("/api/budget", {
     method: "POST",
@@ -25,13 +24,13 @@ const createBudget = async (budgetData) => {
 };
 
 const BudgetPage = () => {
-  const [budgets, setBudgets] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const categories = getCategories();
-  const [loading, setLoading] = useState(true);
+  const [budgets, setBudgets] = useState([]); // State to store budget data
+  const [showForm, setShowForm] = useState(false); // Toggle form visibility
+  const categories = getCategories(); // Fetch predefined categories
+  const [loading, setLoading] = useState(true); // Loading state for fetching data
 
+  // Fetch budgets when the component mounts
   useEffect(() => {
-    // Fetch budgets on component mount
     fetchBudgets()
       .then((data) => {
         setBudgets(data);
@@ -41,21 +40,9 @@ const BudgetPage = () => {
         console.error("Error fetching budgets:", error);
         setLoading(false);
       });
-
-    // Fetch categories (you can replace this with actual category fetching logic)
-    // setCategories(["Food", "Entertainment", "Bills"]);
   }, []);
 
-  // const handleUpdateBudget = async (budgetData) => {
-  //   try {
-  //     const newBudget = await createBudget(budgetData);
-  //     setBudgets((prevBudgets) => [...prevBudgets, newBudget]);
-  //     setShowForm(false);
-  //   } catch (error) {
-  //     console.error("Error creating budget:", error);
-  //   }
-  // };
-
+  // Function to handle budget creation or update
   const handleUpdateBudget = async (budgetData) => {
     const response = await fetch("/api/budget", {
       method: "POST",
@@ -86,16 +73,16 @@ const BudgetPage = () => {
       });
       setShowForm(false);
     } else {
-      // Handle error
       console.error("Error updating budget:", response);
     }
   };
 
+  // Function to determine budget status color based on spending percentage
   const getBudgetStatusColor = (spent, limit) => {
     const percentage = (spent / limit) * 100;
-    if (percentage >= 90) return "bg-red-500";
-    if (percentage >= 75) return "bg-yellow-500";
-    return "bg-green-500";
+    if (percentage >= 90) return "bg-red-500"; // Over budget
+    if (percentage >= 75) return "bg-yellow-500"; // Nearing budget limit
+    return "bg-green-500"; // Within budget
   };
 
   return (
