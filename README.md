@@ -1,4 +1,4 @@
-# 🐖 FinanceTrack - Personal Finance Management
+# 🐖 FinanceTrack - Personal Finance Visualizer
 
 ## 🚀 Overview
 
