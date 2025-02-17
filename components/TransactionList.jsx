@@ -30,7 +30,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getCategories } from "@/lib/data";
-import { useRouter } from "next/router";
 
 export default function TransactionList({
   transactions,
