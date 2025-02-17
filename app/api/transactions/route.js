@@ -56,10 +56,18 @@ export async function PUT(req) {
 
   try {
     const body = await req.json();
-    const { id, category, amount, previousAmount } = body;
+    const {
+      _id,
+      category,
+      amount,
+      date,
+      description,
+      paymentMethod,
+      previousAmount,
+    } = body;
 
     // Find the transaction to update
-    const transaction = await Transaction.findById(id);
+    const transaction = await Transaction.findById(_id);
     if (!transaction) {
       return NextResponse.json(
         { message: "Transaction not found" },
@@ -82,13 +90,14 @@ export async function PUT(req) {
     }
 
     // Update the transaction data
-    transaction.date = body.date;
-    transaction.description = body.description;
-    transaction.category = body.category;
-    transaction.paymentMethod = body.paymentMethod;
-    transaction.amount = body.amount;
+    transaction.date = date;
+    transaction.description = description;
+    transaction.category = category;
+    transaction.paymentMethod = paymentMethod;
+    transaction.amount = amount;
 
-    await transaction.save();
+    // await transaction.save();
+    await Transaction.updateOne({ _id }, transaction);
 
     return NextResponse.json(transaction, { status: 200 });
   } catch (error) {
@@ -142,18 +151,3 @@ export async function DELETE(req) {
     );
   }
 }
-
-  //   // Update the actualSpent field in the budget by subtracting the transaction amount
-  //   const budget = await Budget.findOne({ category });
-  //   if (budget) {
-  //     await Budget.updateOne(
-  //       { category },
-  //       { $inc: { actualSpent: -amount } } // Decrement by the transaction amount
-  //     );
-  //   }
-
-  //   return NextResponse.json(
-  //     { message: "Transaction deleted" },
-  //     { status: 200 }
-  //   );
-  // }

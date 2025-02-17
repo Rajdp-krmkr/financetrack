@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getCategories } from "@/lib/data";
+import { useRouter } from "next/router";
 
 export default function TransactionList({
   transactions,
@@ -41,11 +42,18 @@ export default function TransactionList({
   const [editedTransaction, setEditedTransaction] = useState(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState(null);
+  const [previousAmount, setPreviousAmount] = useState(null);
 
   const categories = getCategories();
 
+  const ReloadPage = () => {
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    } //reload the window after the transaction is deleted adn edited
+  };
+
   const handleEditClick = (transaction) => {
-    setEditingId(transaction.id);
+    setEditingId(transaction._id);
     setEditedTransaction({ ...transaction });
   };
 
@@ -54,11 +62,48 @@ export default function TransactionList({
     setEditedTransaction(null);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (editedTransaction) {
-      onUpdate(editedTransaction);
-      setEditingId(null);
-      setEditedTransaction(null);
+      // onUpdate(editedTransaction);
+      // setEditingId(null);
+      // setEditedTransaction(null);
+
+      const { _id, category, amount, date, description, paymentMethod } =
+        editedTransaction;
+      // amount: 790;
+      // category: "Housing";
+      // createdAt: "2025-02-17T10:18:45.123Z";
+      // date: "2025-02-17";
+      // description: "sasa";
+      // paymentMethod: "cash";
+      // updatedAt: "2025-02-17T10:18:45.123Z";
+      // __v: 0;
+      // _id: "67b30d05efe178419fd341ba";
+
+      const response = await fetch(`/api/transactions`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _id,
+          category,
+          amount,
+          previousAmount,
+          date,
+          description,
+          paymentMethod,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Transaction edited successfully");
+        // setShowConfirmDialog(false);
+        setEditingId(null);
+        ReloadPage();
+      } else {
+        alert("Error deleting transaction");
+      }
     }
   };
 
@@ -69,7 +114,7 @@ export default function TransactionList({
 
   const handleConfirmDelete = () => {
     if (transactionToDelete) {
-      onDelete(transactionToDelete.id);
+      onDelete(transactionToDelete._id);
     }
     setShowConfirmDialog(false);
     setTransactionToDelete(null);
@@ -90,6 +135,7 @@ export default function TransactionList({
       if (response.ok) {
         alert("Transaction deleted successfully");
         setShowConfirmDialog(false);
+        ReloadPage();
       } else {
         alert("Error deleting transaction");
       }
@@ -111,8 +157,8 @@ export default function TransactionList({
         </TableHeader>
         <TableBody>
           {transactions.map((transaction) => (
-            <TableRow key={transaction.id}>
-              {editingId === transaction.id ? (
+            <TableRow key={transaction._id}>
+              {editingId === transaction._id ? (
                 <>
                   <TableCell>
                     <Input
@@ -232,7 +278,10 @@ export default function TransactionList({
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleEditClick(transaction)}
+                          onClick={() => {
+                            handleEditClick(transaction);
+                            setPreviousAmount(transaction.amount);
+                          }}
                           className="h-8 w-8"
                         >
                           <Edit2 className="h-4 w-4" />
