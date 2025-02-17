@@ -105,10 +105,11 @@ export async function DELETE(req) {
   await dbConnect();
 
   try {
-    const { id, category, amount } = await req.json();
+    const { _id, category, amount } = await req.json();
 
     // Find the transaction to delete
-    const transaction = await Transaction.findById(id);
+    const transaction = await Transaction.findById(_id);
+    console.log("Deleting transaction:", transaction);
     if (!transaction) {
       return NextResponse.json(
         { message: "Transaction not found" },
@@ -117,7 +118,7 @@ export async function DELETE(req) {
     }
 
     // Remove the transaction
-    await transaction.remove();
+    await Transaction.deleteOne({ _id });
 
     // Update the actualSpent field in the budget by subtracting the transaction amount
     const budget = await Budget.findOne({ category });
@@ -128,8 +129,9 @@ export async function DELETE(req) {
       );
     }
 
+    // Return a response confirming the deletion
     return NextResponse.json(
-      { message: "Transaction deleted" },
+      { message: "Transaction deleted successfully" },
       { status: 200 }
     );
   } catch (error) {
@@ -140,3 +142,18 @@ export async function DELETE(req) {
     );
   }
 }
+
+  //   // Update the actualSpent field in the budget by subtracting the transaction amount
+  //   const budget = await Budget.findOne({ category });
+  //   if (budget) {
+  //     await Budget.updateOne(
+  //       { category },
+  //       { $inc: { actualSpent: -amount } } // Decrement by the transaction amount
+  //     );
+  //   }
+
+  //   return NextResponse.json(
+  //     { message: "Transaction deleted" },
+  //     { status: 200 }
+  //   );
+  // }

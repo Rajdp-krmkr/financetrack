@@ -75,6 +75,27 @@ export default function TransactionList({
     setTransactionToDelete(null);
   };
 
+  const handleDeleteConfirm = async () => {
+    if (transactionToDelete) {
+      const { _id, category, amount } = transactionToDelete;
+
+      const response = await fetch(`/api/transactions`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id, category, amount }),
+      });
+
+      if (response.ok) {
+        alert("Transaction deleted successfully");
+        setShowConfirmDialog(false);
+      } else {
+        alert("Error deleting transaction");
+      }
+    }
+  };
+
   return (
     <>
       <Table>
@@ -246,7 +267,8 @@ export default function TransactionList({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleConfirmDelete}
+              // onClick={handleConfirmDelete}
+              onClick={handleDeleteConfirm}
               className="bg-red-500 hover:bg-red-600"
             >
               Delete
