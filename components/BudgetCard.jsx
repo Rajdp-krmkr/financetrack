@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Edit2, Trash2, X, Check } from "lucide-react";
 import { Progress } from "./ui/progress";
 
-//alert-dialog-box
+// Alert Dialog for confirmation prompts
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +17,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input } from "./ui/input";
+
+// Custom Select Dropdown
 import {
   Select,
   SelectContent,
@@ -24,31 +26,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { getCategories } from "@/lib/data";
 
 const BudgetCard = ({ budget, statusColor, percentage }) => {
+  // State for managing confirmation dialog visibility and selected budget items
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [budgetToDelete, setBudgetToDelete] = useState(null);
   const [budgetToEdit, setBudgetToEdit] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Local state to reflect budget updates
   const [budgetinComponent, setBudgetInComponent] = useState(budget);
 
+  // Handle delete button click
   const handleDeleteClick = (budget) => {
     setBudgetToDelete(budget);
     setShowConfirmDialog(true);
   };
+
+  // Handle edit button click
   const handleEditClick = (budget) => {
     setBudgetToEdit(budget);
     setIsEditing(true);
   };
 
+  // Confirm budget update and send request to the server
   const handleConfirmEditBudget = async () => {
     console.log(budgetToEdit);
     setBudgetInComponent(budgetToEdit);
-    //function here
-
-    console.log(budgetToEdit);
 
     if (budgetToEdit) {
       const res = await fetch("/api/budget", {
@@ -59,43 +63,28 @@ const BudgetCard = ({ budget, statusColor, percentage }) => {
         body: JSON.stringify(budgetToEdit),
       });
 
-      console.log(res);
-
       if (!res.ok) {
+        console.error("Failed to update budget");
         setBudgetToEdit(null);
         setIsEditing(false);
-        console.error("Failed to delete budget");
-        throw new Error("Failed to delete budget");
+        throw new Error("Failed to update budget");
       } else {
+        alert("Budget updated successfully");
         setBudgetToEdit(null);
         setIsEditing(false);
-        alert("Budget updated successfully");
-        // ReloadPage();
         return res.json();
       }
     }
+  };
 
+  // Cancel the edit mode
+  const handleCancelEditBudget = () => {
     setBudgetToEdit(null);
     setIsEditing(false);
   };
 
-  const handleCancelEditBudget = () => {
-    setBudgetToDelete(null);
-
-    setIsEditing(false);
-  };
-
-  const categories = getCategories();
-
-  const ReloadPage = () => {
-    if (typeof window !== "undefined") {
-      window.location.reload();
-    } //reload the window after the transaction is deleted adn edited
-  };
-
+  // Confirm and delete the selected budget item
   const handleDeleteConfirm = async () => {
-    //add the function
-    console.log(budgetToDelete);
     if (budgetToDelete) {
       const res = await fetch("/api/budget", {
         method: "DELETE",
@@ -105,22 +94,22 @@ const BudgetCard = ({ budget, statusColor, percentage }) => {
         body: JSON.stringify(budgetToDelete),
       });
 
-      console.log(res);
       if (!res.ok) {
+        console.error("Failed to delete budget");
         setBudgetToDelete(null);
         setShowConfirmDialog(false);
-        console.error("Failed to delete budget");
         throw new Error("Failed to delete budget");
       } else {
+        alert("Budget Deleted successfully");
         setBudgetToDelete(null);
         setShowConfirmDialog(false);
-        alert("Budget Deleted successfully");
         ReloadPage();
         return res.json();
       }
     }
   };
 
+  // Editing Mode UI
   if (isEditing) {
     return (
       <Card key={budgetToEdit._id} className="relative overflow-hidden">
@@ -202,7 +191,7 @@ const BudgetCard = ({ budget, statusColor, percentage }) => {
 
   return (
     <>
-      {/* {isEditing ? "editing" : "not editing"} */}
+      {/* Display the budget card when not in edit mode */}
       <Card key={budgetinComponent._id} className="relative overflow-hidden">
         <div className={`absolute top-0 left-0 w-1 h-full ${statusColor}`} />
         <CardHeader>
@@ -259,19 +248,19 @@ const BudgetCard = ({ budget, statusColor, percentage }) => {
         </CardContent>
       </Card>
 
+      {/* Confirmation dialog for deletion */}
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Transaction</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this transaction? This action
-              cannot be undone.
+              Are you sure you want to delete {budgetToDelete?.category} budget?
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              // onClick={handleConfirmDelete}
               onClick={handleDeleteConfirm}
               className="bg-red-500 hover:bg-red-600"
             >

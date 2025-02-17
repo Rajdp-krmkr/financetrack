@@ -37,48 +37,41 @@ export default function TransactionList({
   onUpdate,
   compact = false,
 }) {
-  const [editingId, setEditingId] = useState(null);
-  const [editedTransaction, setEditedTransaction] = useState(null);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [transactionToDelete, setTransactionToDelete] = useState(null);
-  const [previousAmount, setPreviousAmount] = useState(null);
+  // States for handling editing and deletion processes
+  const [editingId, setEditingId] = useState(null); // Track the transaction being edited
+  const [editedTransaction, setEditedTransaction] = useState(null); // Stores the edited transaction details
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false); // Manages the visibility of delete confirmation dialog
+  const [transactionToDelete, setTransactionToDelete] = useState(null); // Stores the transaction to be deleted
+  const [previousAmount, setPreviousAmount] = useState(null); // Stores the previous amount before editing
 
-  const categories = getCategories();
+  const categories = getCategories(); // Fetch the available categories
 
+  // Reload the page after editing or deleting a transaction
   const ReloadPage = () => {
     if (typeof window !== "undefined") {
-      window.location.reload();
-    } //reload the window after the transaction is deleted adn edited
+      window.location.reload(); // Reload the window after a transaction is deleted or edited
+    }
   };
 
+  // Handle the click on the edit button, opening the edit form for the specific transaction
   const handleEditClick = (transaction) => {
-    setEditingId(transaction._id);
-    setEditedTransaction({ ...transaction });
+    setEditingId(transaction._id); // Set the transaction id as the one being edited
+    setEditedTransaction({ ...transaction }); // Copy the transaction details for editing
   };
 
+  // Cancel the editing process and reset the form
   const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditedTransaction(null);
+    setEditingId(null); // Reset the editingId state
+    setEditedTransaction(null); // Clear the edited transaction details
   };
 
+  // Save the edited transaction to the database
   const handleSaveEdit = async () => {
     if (editedTransaction) {
-      // onUpdate(editedTransaction);
-      // setEditingId(null);
-      // setEditedTransaction(null);
-
       const { _id, category, amount, date, description, paymentMethod } =
         editedTransaction;
-      // amount: 790;
-      // category: "Housing";
-      // createdAt: "2025-02-17T10:18:45.123Z";
-      // date: "2025-02-17";
-      // description: "sasa";
-      // paymentMethod: "cash";
-      // updatedAt: "2025-02-17T10:18:45.123Z";
-      // __v: 0;
-      // _id: "67b30d05efe178419fd341ba";
 
+      // Make an API call to update the transaction details in the database
       const response = await fetch(`/api/transactions`, {
         method: "PUT",
         headers: {
@@ -95,34 +88,38 @@ export default function TransactionList({
         }),
       });
 
+      // Handle success or failure
       if (response.ok) {
         alert("Transaction edited successfully");
-        // setShowConfirmDialog(false);
-        setEditingId(null);
-        ReloadPage();
+        setEditingId(null); // Reset the editing state
+        ReloadPage(); // Reload the page to reflect changes
       } else {
-        alert("Error deleting transaction");
+        alert("Error editing transaction");
       }
     }
   };
 
+  // Trigger the delete confirmation dialog when the delete button is clicked
   const handleDeleteClick = (transaction) => {
-    setTransactionToDelete(transaction);
-    setShowConfirmDialog(true);
+    setTransactionToDelete(transaction); // Set the transaction to be deleted
+    setShowConfirmDialog(true); // Show the confirmation dialog
   };
 
+  // Confirm the deletion and call the onDelete function
   const handleConfirmDelete = () => {
     if (transactionToDelete) {
-      onDelete(transactionToDelete._id);
+      onDelete(transactionToDelete._id); // Call the onDelete function passed as a prop
     }
-    setShowConfirmDialog(false);
-    setTransactionToDelete(null);
+    setShowConfirmDialog(false); // Close the confirmation dialog
+    setTransactionToDelete(null); // Clear the transaction to delete
   };
 
+  // Confirm the deletion from the dialog and delete the transaction
   const handleDeleteConfirm = async () => {
     if (transactionToDelete) {
       const { _id, category, amount } = transactionToDelete;
 
+      // Make an API call to delete the transaction from the database
       const response = await fetch(`/api/transactions`, {
         method: "DELETE",
         headers: {
@@ -131,10 +128,11 @@ export default function TransactionList({
         body: JSON.stringify({ _id, category, amount }),
       });
 
+      // Handle success or failure
       if (response.ok) {
         alert("Transaction deleted successfully");
-        setShowConfirmDialog(false);
-        ReloadPage();
+        setShowConfirmDialog(false); // Close the dialog
+        ReloadPage(); // Reload the page to reflect changes
       } else {
         alert("Error deleting transaction");
       }
@@ -158,6 +156,7 @@ export default function TransactionList({
           {transactions.map((transaction) => (
             <TableRow key={transaction._id}>
               {editingId === transaction._id ? (
+                // Edit form for the selected transaction
                 <>
                   <TableCell>
                     <Input
@@ -261,6 +260,7 @@ export default function TransactionList({
                   </TableCell>
                 </>
               ) : (
+                // Display transaction details and actions
                 <>
                   <TableCell>
                     {new Date(transaction.date).toLocaleDateString()}
@@ -303,6 +303,7 @@ export default function TransactionList({
         </TableBody>
       </Table>
 
+      {/* Delete confirmation dialog */}
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -315,7 +316,6 @@ export default function TransactionList({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              // onClick={handleConfirmDelete}
               onClick={handleDeleteConfirm}
               className="bg-red-500 hover:bg-red-600"
             >

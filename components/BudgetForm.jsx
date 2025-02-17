@@ -14,20 +14,24 @@ import {
 import { toast } from "sonner";
 
 const BudgetForm = ({ categories, onSubmit }) => {
+  // State to manage the budget form inputs
   const [budget, setBudget] = useState({
-    category: "",
-    limit: "",
-    period: "monthly",
-    notes: "",
+    category: "", // Selected category
+    limit: "", // Budget limit amount
+    period: "monthly", // Budget period (monthly/yearly)
+    notes: "", // Additional notes (optional)
   });
 
+  // Handles form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Ensure category and limit are provided before submitting
     if (budget.category && budget.limit) {
       onSubmit({
         ...budget,
-        limit: parseFloat(budget.limit),
+        limit: parseFloat(budget.limit), // Convert limit to a number
       });
+      // Reset form fields after submission
       setBudget({
         category: "",
         limit: "",
@@ -41,6 +45,7 @@ const BudgetForm = ({ categories, onSubmit }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
+        {/* Category Selection Dropdown */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Category</label>
           <Select
@@ -61,6 +66,7 @@ const BudgetForm = ({ categories, onSubmit }) => {
           </Select>
         </div>
 
+        {/* Time Period Selection (Monthly/Yearly) */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Time Period</label>
           <Select
@@ -78,6 +84,7 @@ const BudgetForm = ({ categories, onSubmit }) => {
         </div>
       </div>
 
+      {/* Budget Limit Input Field */}
       <div className="space-y-2">
         <label htmlFor="limit" className="text-sm font-medium">
           Budget Limit ($)
@@ -93,6 +100,7 @@ const BudgetForm = ({ categories, onSubmit }) => {
         />
       </div>
 
+      {/* Notes Input Field (Optional) */}
       <div className="space-y-2">
         <label htmlFor="notes" className="text-sm font-medium">
           Notes (Optional)
@@ -106,10 +114,12 @@ const BudgetForm = ({ categories, onSubmit }) => {
         />
       </div>
 
+      {/* Submit Button */}
       <Button type="submit" className="w-full">
         Set Budget
       </Button>
     </form>
   );
 };
+
 export default BudgetForm;
