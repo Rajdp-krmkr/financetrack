@@ -1,36 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
-import {
-  getTransactions,
-  addTransaction,
-  deleteTransaction,
-  updateTransaction,
-} from "@/lib/data";
 
 export default function TransactionsPage() {
   const [showForm, setShowForm] = useState(false);
-  const [transactions, setTransactions] = useState(getTransactions());
+  const [transactions, setTransactions] = useState([]);
 
-  const handleAddTransaction = (transaction) => {
-    const newTransaction = addTransaction(transaction);
-    setTransactions([newTransaction, ...transactions]);
+  // Fetch transactions from the database
+  useEffect(() => {
+    async function fetchTransactions() {
+      const res = await fetch("/api/transactions");
+      const data = await res.json();
+      setTransactions(data);
+    }
+    fetchTransactions();
+  }, []);
+
+  // Add new transaction to MongoDB
+  const handleAddTransaction = async (transaction) => {
+    const res = await fetch("/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(transaction),
+    });
+    if (res.ok) {
+      const newTransaction = await res.json();
+      setTransactions([newTransaction, ...transactions]);
+    }
     setShowForm(false);
-  };
-
-  const handleUpdateTransaction = (updatedTransaction) => {
-    updateTransaction(updatedTransaction);
-    setTransactions(getTransactions());
-  };
-
-  const handleDeleteTransaction = (id) => {
-    deleteTransaction(id);
-    setTransactions(transactions.filter((t) => t.id !== id));
   };
 
   return (
@@ -57,11 +59,7 @@ export default function TransactionsPage() {
         </Card>
       )}
 
-      <TransactionList
-        transactions={transactions}
-        onDelete={handleDeleteTransaction}
-        onUpdate={handleUpdateTransaction}
-      />
+      <TransactionList transactions={transactions} />
     </div>
   );
 }

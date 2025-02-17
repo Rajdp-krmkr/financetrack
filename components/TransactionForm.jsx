@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getCategories } from "@/lib/data";
+import { getCategories, getPaymentMethod } from "@/lib/data";
 
 export default function TransactionForm({ onSubmit, onCancel }) {
   const [transaction, setTransaction] = useState({
@@ -18,9 +18,11 @@ export default function TransactionForm({ onSubmit, onCancel }) {
     date: new Date().toISOString().split("T")[0],
     description: "",
     category: "",
+    paymentMethod: "",
   });
 
   const categories = getCategories();
+  const payment_method = getPaymentMethod();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,6 +80,28 @@ export default function TransactionForm({ onSubmit, onCancel }) {
             setTransaction({ ...transaction, description: e.target.value })
           }
         />
+      </div>
+
+      <div className="space-y-2">
+        <label>Payment Method</label>
+        <Select
+          required
+          value={transaction.paymentMethod}
+          onValueChange={(value) =>
+            setTransaction({ ...transaction, paymentMethod: value })
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select Payment Method" />
+          </SelectTrigger>
+          <SelectContent>
+            {payment_method.map((category) => (
+              <SelectItem key={category} value={category.value}>
+                {category.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">
