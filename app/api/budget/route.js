@@ -47,3 +47,66 @@ export const POST = async (req) => {
     return new Response("Error saving budget", { status: 500 });
   }
 };
+
+export const PUT = async (req) => {
+  console.log(req.body);
+  await dbConnect();
+
+  try {
+    const body = await req.json();
+
+    const { category, period, limit } = body;
+
+    if (!category || !period || !limit) {
+      return new Response(
+        { message: "Category, limit and period are required." },
+        { status: 400 }
+      );
+    }
+
+    const updatedBudget = await Budget.findOneAndUpdate(
+      { category },
+      { period, limit }
+    );
+    // await Budget.findOneAndUpdate;
+    console.log(updatedBudget);
+    return new Response(
+      { message: "Budget updated successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating budget:", error);
+    return new Response("Error updating budget", { status: 500 });
+  }
+};
+
+export const DELETE = async (req) => {
+  console.log(req.body);
+  await dbConnect();
+
+  try {
+    const body = await req.json();
+    // console.log(body);
+
+    const { category, limit } = body;
+    // console.log("category, limit: ", category, limit);
+
+    if (!category || !limit) {
+      return new Response(
+        { message: "Category and limit are required." },
+        { status: 400 }
+      );
+    }
+
+    const deletedBudget = await Budget.findOne({ category });
+    await Budget.deleteOne();
+    console.log(deletedBudget);
+    return new Response(
+      { message: "Budget deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting budget:", error);
+    return new Response("Error deleting budget", { status: 500 });
+  }
+};
