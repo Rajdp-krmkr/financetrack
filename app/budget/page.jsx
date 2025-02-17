@@ -4,13 +4,12 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import BudgetForm from "@/components/BudgetForm";
-import { PlusCircle } from "lucide-react";
+import { Edit2, PlusCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getCategories } from "@/lib/data";
 import { fetchBudgets } from "@/lib/fetchTransactions";
 
 // Data functions
-
 
 const createBudget = async (budgetData) => {
   const res = await fetch("/api/budget", {
@@ -141,10 +140,30 @@ const BudgetPage = () => {
                   />
                   <CardHeader>
                     <CardTitle className="flex justify-between items-center">
-                      <span>{budget.category}</span>
-                      <span className="text-sm font-normal text-muted-foreground">
-                        Monthly
-                      </span>
+                      <div>
+                        <span className="mr-2">{budget.category}</span>
+                        <span className="text-sm font-normal text-muted-foreground">
+                          ({budget.period})
+                        </span>
+                      </div>
+                      <div className="flex space-x-2 items-center">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditClick(transaction)}
+                          className="h-8 w-8"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteClick(transaction)}
+                          className="h-8 w-8"
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </div>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
