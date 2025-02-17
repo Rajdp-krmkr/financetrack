@@ -57,7 +57,6 @@ export default function AnalyticsPage() {
   useEffect(() => {
     async function fetchCategoryData() {
       const data = await getCategoryExpenses();
-      console.log("Fetched Categories:", data);
       setCategoryData(data); // ✅ Store category data in state
     }
     fetchCategoryData();

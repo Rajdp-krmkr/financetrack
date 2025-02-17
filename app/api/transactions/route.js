@@ -22,11 +22,9 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    console.log("Received Transaction Data:", body); // Log received data
 
     // Create a new transaction
     const newTransaction = await Transaction.create(body);
-    console.log("Stored Transaction Data:", newTransaction); // Log stored data
 
     // Update the 'actualSpent' value in the budget if the category exists
     const { category, amount } = body; // Extract category and amount from the body
@@ -35,9 +33,8 @@ export async function POST(req) {
     if (budget) {
       // Update the actualSpent field of the respective category by incrementing it
       await Budget.updateOne({ category }, { $inc: { actualSpent: amount } });
-      console.log(`Updated budget for category: ${category}`);
     } else {
-      console.log(`No budget found for category: ${category}`);
+      console.error(`No budget found for category: ${category}`);
     }
 
     return NextResponse.json(newTransaction, { status: 201 });
@@ -118,7 +115,6 @@ export async function DELETE(req) {
 
     // Find the transaction to delete
     const transaction = await Transaction.findById(_id);
-    console.log("Deleting transaction:", transaction);
     if (!transaction) {
       return NextResponse.json(
         { message: "Transaction not found" },

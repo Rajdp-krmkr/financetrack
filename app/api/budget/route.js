@@ -51,7 +51,6 @@ export const POST = async (req) => {
 
 // Update an existing budget
 export const PUT = async (req) => {
-  console.log(req.body); // Log the request body for debugging
   await dbConnect(); // Establish database connection
 
   try {
@@ -71,7 +70,6 @@ export const PUT = async (req) => {
       { category },
       { period, limit }
     );
-    console.log(updatedBudget); // Log the updated budget
 
     return new Response(
       { message: "Budget updated successfully" },
@@ -85,7 +83,6 @@ export const PUT = async (req) => {
 
 // Delete a budget
 export const DELETE = async (req) => {
-  console.log(req.body); // Log the request body for debugging
   await dbConnect(); // Establish database connection
 
   try {
@@ -103,7 +100,6 @@ export const DELETE = async (req) => {
     // Find the budget entry to delete
     const deletedBudget = await Budget.findOne({ category });
     await Budget.deleteOne({ category }); // Delete the budget entry
-    console.log(deletedBudget); // Log the deleted budget
 
     return new Response(
       { message: "Budget deleted successfully" },

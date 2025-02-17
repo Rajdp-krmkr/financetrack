@@ -51,7 +51,6 @@ const BudgetCard = ({ budget, statusColor, percentage }) => {
 
   // Confirm budget update and send request to the server
   const handleConfirmEditBudget = async () => {
-    console.log(budgetToEdit);
     setBudgetInComponent(budgetToEdit);
 
     if (budgetToEdit) {
