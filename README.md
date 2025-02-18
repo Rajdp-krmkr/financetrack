@@ -15,9 +15,8 @@ FinanceTrack is a powerful personal finance management application that helps us
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js, React, Tailwind CSS
-- **Backend**: Next.js API Routes, Node.js, Express.js
+- **Backend**: Next.js API Routes
 - **Database**: MongoDB (Mongoose ORM)
-- **Authentication**: NextAuth.js (Future implementation)
 
 ## 📂 Folder Structure
 
